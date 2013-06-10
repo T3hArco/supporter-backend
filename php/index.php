@@ -28,14 +28,18 @@
  * or implied, of ARNAUD COEL.
  */
 
+session_start();
+
 switch($_GET['act'])
 {
   case 'authenticate':
-    // TODO
+    // TODO: implement authentication
+    $_SESSION['username'] = $_POST['username']; // No escape string due to lack of SQL use
+    echo "200-aaaaaaa"; 
     break;
 
   case 'postsupport':
-    // TODO
+    echo $_SESSION['username'] . "Shit happened, bro";
     break;
 
   case 'getitemlist':
@@ -43,7 +47,5 @@ switch($_GET['act'])
     break;
 
 }
-
-
 
 ?>

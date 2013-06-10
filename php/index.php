@@ -28,18 +28,48 @@
  * or implied, of ARNAUD COEL.
  */
 
-session_start();
+include "db.php";
 
 switch($_GET['act'])
 {
   case 'authenticate':
-    // TODO: implement authentication
-    $_SESSION['username'] = $_POST['username']; // No escape string due to lack of SQL use
-    echo "200-aaaaaaa"; 
+    $username = mysql_real_escape_string($_POST['username']);
+    $password = mysql_real_escape_string(md5($_POST['password'])); // You don't NEED to escape when you're making MD5s, but hey. ;)
+
+    $query = mysql_query("SELECT * FROM users where (username = '$username' AND password = '$password')");
+    $row = mysql_fetch_row($query);
+
+    if(mysql_num_rows($query) == 1)
+    {
+      echo "200-" . $row[4]; 
+    }
+    else
+    {
+      echo "403 - Wrong username/password!";
+    }
+
+    break;
+
+  case 'getauthkey':
+    $authkey = mysql_real_escape_string($_GET['authkey']);
+    $query = mysql_query("SELECT count(*) FROM users WHERE authkey = '$authkey';");
+    $row = mysql_fetch_row($query);
+
+    echo "Your authkey is: " . $_GET['authkey'];
+
+    if($row[0] == 1)
+    {
+      echo ", it's valid";
+    }
+    else
+    {
+      echo ", it's invalid.";
+    }
+
     break;
 
   case 'postsupport':
-    echo "Your authkey is: " . $_GET['authkey'];
+    
     break;
 
   case 'getitemlist':
@@ -47,5 +77,7 @@ switch($_GET['act'])
     break;
 
 }
+
+mysql_close();
 
 ?>

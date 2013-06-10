@@ -39,7 +39,7 @@ switch($_GET['act'])
     break;
 
   case 'postsupport':
-    echo $_SESSION['username'] . "Shit happened, bro";
+    echo "Your authkey is: " . $_GET['authkey'];
     break;
 
   case 'getitemlist':

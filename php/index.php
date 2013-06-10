@@ -30,6 +30,15 @@
 
 include "db.php";
 
+function getIDForAuthKey($authkey)
+{
+  $authkey = mysql_real_escape_string($authkey);
+  $sql = mysql_query("SELECT id FROM users where authkey = '$authkey'");
+  $row = mysql_fetch_row($sql);
+
+  return $row[0];
+}
+
 switch($_GET['act'])
 {
   case 'authenticate':
@@ -73,7 +82,25 @@ switch($_GET['act'])
     break;
 
   case 'getitemlist':
-    // TODO
+    $authkey = mysql_real_escape_string($_GET['authkey']);
+    $query = mysql_query("SELECT count(*) FROM users WHERE authkey = '$authkey';");
+    $row = mysql_fetch_row($query);
+
+    if($row[0] == 1)
+    {
+      $sql = mysql_query("SELECT * FROM tickets INNER JOIN ON(users.id, tickets.owner);");
+      $row = mysql_fetch_row($sql);
+
+      for($i = 0; $i < count($row); $i++)
+      {
+        echo $row[$i];
+      }
+    }
+    else
+    {
+      echo "Your authentication key is NOT valid! Attempt reported";
+      // Todo: block user if too many bad attempts are made
+    }
     break;
 
 }

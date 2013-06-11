@@ -88,12 +88,14 @@ switch($_GET['act'])
 
     if($row[0] == 1)
     {
-      $sql = mysql_query("SELECT * FROM tickets INNER JOIN ON(users.id, tickets.owner);");
-      $row = mysql_fetch_row($sql);
-
-      for($i = 0; $i < count($row); $i++)
+      $id = getIDForAuthKey($_GET['authkey']);
+      $sql = mysql_query("SELECT title, body, username, priority FROM tickets INNER JOIN users ON (tickets.owner=users.id) where owner = $id;");
+      
+      while($row = mysql_fetch_row($sql))
       {
-        echo $row[$i];
+        $row[2] = substr($row[2], 0, 25);
+
+        echo $row[0] . ", " . $row[1] . " - " . $row[2] . "... by: " . $row[5];
       }
     }
     else
